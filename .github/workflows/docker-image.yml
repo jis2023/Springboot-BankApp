@@ -9,6 +9,7 @@ on:
 env:
   APP_NAME: bankapp
   ACR_NAME: megaprojectacr
+  COMPOSE_FILE: docker-compose.yml
 
 jobs:
   build-and-scan:
@@ -27,6 +28,20 @@ jobs:
         run: |
           docker build -t ${{ env.APP_NAME }}:latest .
           docker tag ${{ env.APP_NAME }}:latest ${{ env.APP_NAME }}:${{ github.sha }}
+      
+      # Run tests using Docker Compose
+      - name: Start services and run tests
+        run: |
+          docker-compose -f ${{ env.COMPOSE_FILE }} up -d
+          docker-compose -f ${{ env.COMPOSE_FILE }} exec app ./run-tests.sh
+          docker-compose -f ${{ env.COMPOSE_FILE }} down
+
+      # SonarQube Analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       # --- STEP 4: Login to Azure Container Registry ---
       - name: Login to ACR
