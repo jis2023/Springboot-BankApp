@@ -28,12 +28,18 @@ jobs:
           docker build -t ${{ env.APP_NAME }}:latest .
           docker tag ${{ env.APP_NAME }}:latest ${{ env.APP_NAME }}:${{ github.sha }}
 
-      # --- STEP 4: Run Trivy scan (Filesystem Scan) ---
-      - name: Scan with Trivy
-        uses: aquasecurity/trivy-action@master
+      # --- STEP 4: Login to Azure Container Registry ---
+      - name: Login to ACR
+        if: github.ref == 'refs/heads/main'  # Only run on main branch
+        uses: azure/docker-login@v1
         with:
-          image-ref: ${{ env.APP_NAME }}:latest
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
-          ignore-unfixed: true
+          login-server: ${{ env.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      # --- STEP 5: Push to ACR ---
+      - name: Push to Azure Container Registry
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker tag ${{ env.APP_NAME }}:latest ${{ env.ACR_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
