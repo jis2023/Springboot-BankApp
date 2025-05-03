@@ -50,6 +50,7 @@ jobs:
           args: >
             -Dsonar.projectKey=jis2023_Springboot-BankApp
             -Dsonar.organization=jis2023
+            -Dsonar.java.binaries=target
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
