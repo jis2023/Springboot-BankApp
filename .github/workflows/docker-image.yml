@@ -46,6 +46,10 @@ jobs:
       # --- STEP 6: SonarQube Analysis ---
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
+        with:
+          args: >
+            -Dsonar.projectKey=jis2023
+            -Dsonar.organization=jis2023
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
