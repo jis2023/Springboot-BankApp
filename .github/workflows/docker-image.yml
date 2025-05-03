@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "DevOps" ]
 
+env:
+  APP_NAME: bankapp
+  ACR_NAME: megaprojectacr
+
 jobs:
   build-and-scan:
     runs-on: ubuntu-latest
