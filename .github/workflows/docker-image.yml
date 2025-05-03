@@ -30,7 +30,7 @@ jobs:
 
       # --- STEP 4: Login to Azure Container Registry ---
       - name: Login to ACR
-        if: github.ref == 'refs/heads/main'  # Only run on main branch
+        if: github.ref == 'refs/heads/DevOps'
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.ACR_NAME }}.azurecr.io
@@ -39,7 +39,7 @@ jobs:
 
       # --- STEP 5: Push to ACR ---
       - name: Push to Azure Container Registry
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/DevOps'
         run: |
           docker tag ${{ env.APP_NAME }}:latest ${{ env.ACR_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
           docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
