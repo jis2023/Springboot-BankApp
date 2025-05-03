@@ -43,6 +43,12 @@ jobs:
           docker-compose -f ${{ env.COMPOSE_FILE }} exec app ./run-tests.sh || echo "Tests failed"
           docker-compose -f ${{ env.COMPOSE_FILE }} down
 
+       # --- STEP 5.1: Build the Java project ---
+      - name: Build Java Project
+        run: |
+          ./mvnw clean install # For Maven
+          # ./gradlew build   # Uncomment this if using Gradle
+      
       # --- STEP 6: SonarQube Analysis ---
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master
